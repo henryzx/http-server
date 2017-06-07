@@ -21,6 +21,13 @@ function connect() {
         stompClient.subscribe('/topic/greetings', function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);
         });
+
+        // fetch offline greetings
+          $.get("/topic/list", function(result){
+              result.forEach(function(item){
+                showGreeting(item.content);
+              })
+          });
     });
 }
 
