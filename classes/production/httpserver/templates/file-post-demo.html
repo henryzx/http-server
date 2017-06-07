@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>短信验证</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+</head>
+<body style="font-size: 16px;" id="register">
+
+<div th:if="${message}">
+    <h2 th:text="${message}"/>
+</div>
+
+<h1>普通form表单提交</h1>
+<form action="/" id="testform1" name="testform1" enctype="multipart/form-data" method="post">
+    <input type="file" name="file" id="testfile1"/>
+    <input type="submit" value="提交"/>
+</form>
+
+
+<h1>ajax提交FormData</h1>
+<form id="testform2" name="testform2" onsubmit="ajaxPost();">
+    <input type="file" name="file" id="testfile2"/>
+    <input type="submit" value="提交"/>
+</form>
+
+<h1>ajax提交FileReader</h1>
+<form id="testform3" name="testform3" onsubmit="useFileReader();">
+    <input type="file" name="file" id="testfile3"/>
+    <input type="submit" value="提交"/>
+</form>
+
+
+<script th:inline="javascript">
+
+ /*<![CDATA[*/
+
+        function ajaxPost (e) {
+            var e = e || window.event;
+            e.preventDefault();
+            var xmlhttp = new XMLHttpRequest();
+            var Data = new FormData(document.getElementById('testform2'));
+            xmlhttp.open("POST", '/', true);
+            xmlhttp.send(Data);
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState === 4) {
+                    if (xmlhttp.status === 200) {
+                        var result = JSON.parse(xmlhttp.responseText);
+                        opts.success && opts.success(result);
+                    }
+                    else {
+                        opts.error && opts.error(xmlhttp.status);
+                    }
+                }
+            };
+        }
+
+        function useFileReader () {
+            var e = e || window.event;
+            e.preventDefault();
+            var file = document.getElementById('testfile3').files[0];
+            $.ajax({
+                url: "/",
+                type: "POST",
+                data: file,
+                processData: false
+            });
+        }
+
+/*]]>*/
+
+</script>
+</body>
+</html>
