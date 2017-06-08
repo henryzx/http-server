@@ -21,14 +21,14 @@ class FileUploadController {
 
     val logger = LoggerFactory.getLogger(FileUploadController::class.java)
 
-    @GetMapping("/")
+    @GetMapping("/upload")
     fun index(model: Model): String {
         //model.addAttribute("message", "hello from spring")
 //        return "uploadForm"
         return "file-post-demo"
     }
 
-    @PostMapping("/")
+    @PostMapping("/upload")
     fun handleFileUpload(@RequestParam("file") file: MultipartFile,
                          redirectAttributes: RedirectAttributes): String {
 
@@ -54,7 +54,7 @@ class FileUploadController {
         return "redirect:/"
     }
 
-    @PostMapping("/uploader")
+    @PostMapping("/upload/uploader")
     fun handleFile(body: RequestEntity<InputStream>,
                    redirectAttributes: RedirectAttributes): String {
         redirectAttributes.addFlashAttribute("message",
