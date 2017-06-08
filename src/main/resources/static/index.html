@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8"/>
     <title>Hello WebSocket</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
@@ -15,9 +16,17 @@
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
     <div class="row">
+        <div class="col-md-12">
+            <h1>
+                欢迎！Welcome to zhengxiao.info
+            </h1>
+            <img src="/res/meat.jpg" style="width:100%;padding:1em;"/>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-6">
             <form class="form-inline">
-                <div class="form-group">
+                <div class="form-group" style="display:none;">
                     <label for="connect">WebSocket connection:</label>
                     <button id="connect" class="btn btn-default" type="submit">Connect</button>
                     <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect

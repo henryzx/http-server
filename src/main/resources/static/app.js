@@ -13,7 +13,7 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/gs-guide-websocket');
+    var socket = new SockJS('/greetings-websocket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);
@@ -23,7 +23,7 @@ function connect() {
         });
 
         // fetch offline greetings
-          $.get("/topic/list", function(result){
+          $.get("/greetings", function(result){
               result.forEach(function(item){
                 showGreeting(item.content);
               })
@@ -44,7 +44,7 @@ function sendName() {
 }
 
 function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+    $("#greetings").prepend("<tr><td>" + message + "</td></tr>");
 }
 
 $(function () {
@@ -54,4 +54,9 @@ $(function () {
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendName(); });
+
+    // start
+
+    // auto connect to host
+    connect();
 });

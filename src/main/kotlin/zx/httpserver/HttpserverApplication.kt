@@ -25,7 +25,6 @@ class FileUploadController {
     fun index(model: Model): String {
         //model.addAttribute("message", "hello from spring")
 //        return "uploadForm"
-        logger.info("index!")
         return "file-post-demo"
     }
 

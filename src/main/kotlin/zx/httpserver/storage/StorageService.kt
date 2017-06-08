@@ -1,7 +1,7 @@
 package zx.httpserver.storage
 
 import org.springframework.stereotype.Service
-import zx.httpserver.websocket.Greeting
+import zx.httpserver.websocket.data.Greeting
 
 /**
  * Created by zhengxiao on 07/06/2017.
@@ -15,7 +15,7 @@ interface StorageService {
 }
 
 @Service
-class StorageServiceImp : StorageService {
+class StorageServiceInMemImp : StorageService {
 
     val list = ArrayList<Greeting>()
 
@@ -24,7 +24,7 @@ class StorageServiceImp : StorageService {
     }
 
     override fun list(page: Int, limit: Int): List<Greeting> {
-        return list.subList(Math.max(list.size - 1 - limit, 0), Math.max(list.size - 1, 0)).reversed()
+        return list.subList(Math.max(list.size - 1 - limit, 0), Math.max(list.size, 0))
     }
 
     override fun count(): Long {

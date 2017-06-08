@@ -14,13 +14,13 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 @EnableWebSocketMessageBroker
 class WebSocketConfig : AbstractWebSocketMessageBrokerConfigurer() {
 
+    override fun registerStompEndpoints(registry: StompEndpointRegistry?) {
+        registry?.addEndpoint("/greetings-websocket")?.withSockJS()
+    }
+
     override fun configureMessageBroker(registry: MessageBrokerRegistry?) {
         registry?.enableSimpleBroker("/topic")
         registry?.setApplicationDestinationPrefixes("/app")
-    }
-
-    override fun registerStompEndpoints(registry: StompEndpointRegistry?) {
-        registry?.addEndpoint("/gs-guide-websocket")?.withSockJS()
     }
 
 }

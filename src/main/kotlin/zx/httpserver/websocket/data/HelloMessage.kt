@@ -1,4 +1,4 @@
-package zx.httpserver.websocket
+package zx.httpserver.websocket.data
 
 /**
  * Created by zhengxiao on 07/06/2017.

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import zx.httpserver.storage.StorageService
+import zx.httpserver.websocket.data.Greeting
+import zx.httpserver.websocket.data.HelloMessage
 
 /**
  * Created by zhengxiao on 07/06/2017.
@@ -16,14 +18,14 @@ import zx.httpserver.storage.StorageService
 class GreetingController {
 
     @Autowired
-    var storageService: StorageService? = null
+    lateinit var storageService: StorageService
 
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     fun greeting(message: HelloMessage): Greeting {
         Thread.sleep(1000)
-        val greeting = Greeting("Hello, ${message.name} !")
-        storageService?.append(greeting)
+        val greeting = Greeting("Hi, ${message.name} !")
+        storageService.append(greeting)
         return greeting
     }
 }
@@ -32,10 +34,10 @@ class GreetingController {
 class GreetingRestController {
 
     @Autowired
-    var storageService: StorageService? = null
+    lateinit var storageService: StorageService
 
-    @GetMapping("/topic/list")
+    @GetMapping("/greetings")
     fun listGreetings(): List<Greeting> {
-        return storageService?.list() ?: emptyList()
+        return storageService.list()
     }
 }
