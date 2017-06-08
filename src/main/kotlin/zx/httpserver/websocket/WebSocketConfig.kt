@@ -19,7 +19,7 @@ class WebSocketConfig : AbstractWebSocketMessageBrokerConfigurer() {
     }
 
     override fun configureMessageBroker(registry: MessageBrokerRegistry?) {
-        registry?.enableSimpleBroker("/topic")
+        registry?.enableSimpleBroker("/topic", "/pixel")
         registry?.setApplicationDestinationPrefixes("/app")
     }
 

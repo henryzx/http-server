@@ -1,26 +1,30 @@
-function draw(pixels){
+var colSize = 32;
+var pixels = [];
+
+function draw(){
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-    var gridNum = 32;
-    var gridWidth = canvas.width / gridNum;
+    var colSize = 32;
+    var gridWidth = canvas.width / colSize;
 
     console.log("canvas.width="+canvas.width)
     console.log("grid.width="+gridWidth)
 
-    for (var i = 0; i < gridNum; i++) {
-        for (var j = 0; j < gridNum; j++) {
+    for (var i = 0; i < colSize * colSize; i++) {
 
             var color = "#ffffff";
 
-            if (pixels && pixels[j][i]){
-                color = pixels[j][i].color;
+            if (pixels[i]){
+                color = pixels[i].color;
             }
 
             ctx.fillStyle = color;
 
-            ctx.fillRect(j * gridWidth, i * gridWidth, gridWidth, gridWidth);
-        }
+            var x = Math.floor(i % colSize);
+            var y = Math.floor(i / colSize);
+
+            ctx.fillRect(x * gridWidth, y * gridWidth, gridWidth, gridWidth);
     }
 }
 
@@ -36,8 +40,8 @@ function drawPicker(){
     ];
 
     var colorsIndex = 0;
-    var gridNum = 4;
-    var gridWidth = canvas.width / gridNum;
+    var colSize = 4;
+    var gridWidth = canvas.width / colSize;
 
     for (var i = 0; i < 4; i++) {
       for (var j = 0; j < 4; j++) {
@@ -52,8 +56,7 @@ function drawPicker(){
 
 function calcIndexFromPosition(x, y){
     var canvas = document.getElementById('canvas');
-    var gridNum = 32;
-    var gridWidth = canvas.width / gridNum;
+    var gridWidth = canvas.width / colSize;
 
     var i = Math.floor(x/gridWidth);
     var j = Math.floor(y/gridWidth);
@@ -61,23 +64,15 @@ function calcIndexFromPosition(x, y){
     return {i:i, j:j};
 }
 
-function onColorChanged(pixels, i, j){
-    draw(pixels);
+function onColorChanged(pixel){
+    draw();
+    sendPixel(pixel);
 }
 
-
-
 function onLoad(){
-        var gridNum = 32;
-        var pixels = [[]];
-        for(var i = 0; i < gridNum; ++i) {
-            pixels[i] = [];
-        }
 
         var currentUid = "test";
-        var currentColor = "#000000";
-
-
+        var currentColor = "#424242";
 
         document.getElementById('color-picker').addEventListener('click', function(e){
             console.debug('click: ' + e.offsetX + e.offsetY);
@@ -85,14 +80,17 @@ function onLoad(){
             var hex = rgbToHexString(pixel[0], pixel[1], pixel[2]);
             currentColor = hex;
 
-            document.body.style = "background:" + hex;
+            $("body").css("background", hex);
             e.stopPropagation();
         });
 
         document.getElementById('canvas').addEventListener('click', function(e){
             var out = calcIndexFromPosition(e.offsetX, e.offsetY);
-            pixels[out.i][out.j] = {color: currentColor, uid: currentUid};
-            onColorChanged(pixels, out.i, out.j);
+            var x = out.i;
+            var y = out.j;
+            var pixel = {color: currentColor, uid: currentUid, x: x, y: y, time: new Date().getTime()};
+            pixels[y * colSize + x] = pixel;
+            onColorChanged(pixel);
             e.stopPropagation();
         });
 
@@ -103,6 +101,10 @@ function onLoad(){
 
         draw();
         drawPicker();
+
+
+        // start connection
+        connect();
 }
 
 
@@ -114,4 +116,46 @@ function rgbToHex(r, g, b) {
 
 function rgbToHexString(r, g, b){
     return "#" + ("000000" + rgbToHex(r, g, b)).slice(-6);
+}
+
+
+
+
+
+
+
+
+
+
+
+/////////// module
+
+function newPixelArrived(pixel){
+    if(pixel){
+        pixels[pixel.x + colSize * pixel.y] = pixel;
+        draw();
+    }
+}
+
+function sendPixel(pixel) {
+    stompClient.send("/app/pixel", {}, JSON.stringify(pixel));
+}
+
+
+function connect() {
+    var socket = new SockJS('/greetings-websocket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        //setConnected(true);
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/pixels', function (greeting) {
+            newPixelArrived(JSON.parse(greeting.body));
+        });
+
+        // fetch offline greetings
+      $.get("/pixels", function(result){
+            pixels = result;
+            draw();
+      });
+    });
 }

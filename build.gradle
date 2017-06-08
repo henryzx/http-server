@@ -36,13 +36,6 @@ repositories {
     jcenter()
 }
 
-//idea{
-//    module{
-//        inheritOutputDirs = false
-//        outputDir = file("$buildDir/classes/main/")
-//    }
-//}
-
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
