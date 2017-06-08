@@ -55,6 +55,10 @@ $(function () {
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendName(); });
 
+    $("#btn-goto-canvas").click(function(){
+        window.location.href = "/canvas/canvas.html";
+    });
+
     // start
 
     // auto connect to host
